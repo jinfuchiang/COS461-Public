@@ -7,12 +7,10 @@
 package main
 
 import (
-  "fmt"
   "io"
   "os"
   "log"
   "net"
-  "bufio"
 )
 
 const RECV_BUFFER_SIZE = 2048
@@ -22,7 +20,18 @@ const RECV_BUFFER_SIZE = 2048
  * Print received message to stdout
 */
 func server(server_port string) {
-
+  ln, err := net.Listen("tcp", ":"+server_port)
+  if err != nil {
+    log.Fatalf("%s: Unable to listen", err)
+  }
+  for {
+    conn, err := ln.Accept()
+    if err != nil {
+      log.Fatal(err)
+    }
+    // status, err := bufio.NewReader(conn).ReadString
+    io.Copy(os.Stdout, conn)
+  }
 }
 
 
